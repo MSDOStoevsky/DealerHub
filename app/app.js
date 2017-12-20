@@ -11,9 +11,9 @@ var app = express();
 var jsonParser = bodyParser.json();
 
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, '../dashboard')));
 
-app.post('/auth/login/', function (req, res) {
+app.post('/auth/login/', jsonParser, function (req, res) {
     auth.login(req.headers.authorization, sql, function(neterr, token){
         if(neterr) res.sendStatus(neterr);
         else {
@@ -36,7 +36,7 @@ app.post('/auth/login/', function (req, res) {
         }
     });   
 
-})
+});
 
 
 app.post('/api/add/admin/', jsonParser, function (req, res) {
@@ -45,29 +45,32 @@ app.post('/api/add/admin/', jsonParser, function (req, res) {
     else
     {
         auth.secure(req.body.pw, function(hash){
-            sql.query('CALL add_admin("'
+            console.log(hash);
+            sql.query('CALL `add_admin`("'
             +req.body.nme
             +'","'
             +req.body.email
             +'","'
             +hash
-            +'")');
+            +'")', function(ret){
+                console.log(ret);
+            });
         });
-        res.end(JSON.stringify({ "STATUS": "success"}))
+        res.end(JSON.stringify({ "STATUS": "success"}));
     }
-})
+});
 
 app.get('/api/get/clients/', function (req, res) {
     console.log("[200] " + req.method + " to " + req.url);
-    /*auth.authorize(req.headers.authorization, req.params.userid, sql, function(neterr, match){
+    auth.authorize(req.headers.authorization, 1, sql, function(neterr, match){
         if (neterr || !match) res.sendStatus(neterr);
         else {
-            mongo.query("invoice", {'user_id': req.params.userid}, function(ret){
+            sql.get_clients(function(ret){
                 res.json(ret);
             });
         }
-    });*/
-})
+    });
+});
 
 app.get('/api/get/clients/:clientid', function (req, res) {
     console.log("[200] " + req.method + " to " + req.url);
@@ -79,7 +82,7 @@ app.get('/api/get/clients/:clientid', function (req, res) {
             });
         }
     });*/
-})
+});
 
 app.get('/api/add/:client', function (req, res) {
     console.log("[200] " + req.method + " to " + req.url);
@@ -92,7 +95,7 @@ app.get('/api/add/:client', function (req, res) {
         }
     });*/
 
-})
+});
 
 var server = app.listen(7819, function () {
     var host = server.address().address

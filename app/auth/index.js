@@ -39,20 +39,24 @@ module.exports = {
                 else
                 {
                     console.log(ret);
-                    bcrypt.compare(un_pw[1], ret[0].pw, function(err, issame){
-                        if (err) throw err;
+                    bcrypt.compare(un_pw[1], ret[0].pw, function(bcrypt_err, issame){
+                        if (bcrypt_err) throw bcrypt_err;
                         /* password matches */
-                        else if (issame)
+                        if (issame)
                         { 
                             /* store generated access token in db and send to client */
                             var access_token = token_gen();
-                            db.query("UPDATE `Admins` SET `token` = "
+                            db.query("UPDATE `Admins` SET `token` = '"
                             + access_token
-                            + ", `last_login` = NOW()"
+                            + "', `last_login` = NOW()"
                             + " WHERE `id` = "
-                            +ret[0].user_id
-                            )
-                            res (null, access_token);
+                            +ret[0].id
+                            ,function(ret){
+                                if(ret !== null)
+                                    res (null, access_token);
+                                else
+                                    res (404, null);
+                            });
                         }
                         /* no password match */
                         else
@@ -81,7 +85,7 @@ module.exports = {
         if(bearer_arr[0] === "Bearer")
         {
             btoken = bearer_arr[1];
-            db.query("user", {'user_id': user}, function(ret){
+            db.query('SELECT * FROM `Admins` WHERE `id` = "'+user+'"', function(ret){
 
                 /* no user with that user_id */
                 if(ret.length === 0)
@@ -91,8 +95,7 @@ module.exports = {
                 else
                 {
                     if( ret[0].token == btoken) res(null, true);
-                    else res (403, false);
-                
+                    else res (400, false);
                 }
             });
         }
