@@ -79,10 +79,44 @@ app.post('/api/add/link', function (req, res) {
         if (neterr || !match) res.sendStatus(neterr);
         else {
             sql.query(
-                
+                'CALL `add_link`('
+                +1
+                +',"'
+                +req.body.nme
+                +'","'
+                +req.body.link
+                +'")',
             ,function(ret){
                 console.log(ret);
             });
+        }
+    });
+});
+
+/** 
+ * POST request to /api/add/referral/
+ * adds new referral code to client
+ * */
+app.post('/api/add/referral', function (req, res) {
+    console.log("[200] " + req.method + " to " + req.url);
+    auth.authorize(req.headers.authorization, 1, sql, function(neterr, match){
+        if (neterr || !match) res.sendStatus(neterr);
+        else {
+            var code = auth.referral_gen();
+            sql.query(
+                'INSERT INTO `Referrals`'
+                +'(`client_id`, `admin_id`, `referral`, `ref_expr`)'
+                +'VALUES ('
+                +req.body.client
+                +','
+                +1
+                +',"'
+                +code
+                +'",NOW())',
+            ,function(ret){
+                console.log(ret);
+            });
+            res.end(JSON.stringify({"REFERRAL": code}));
         }
     });
 });
@@ -125,38 +159,17 @@ app.get('/api/get/clients/:clientid', function (req, res) {
 });
 
 /** 
- * GET request to /api/get/clients/:clientid/:linkid
- * returns client browsing detail as JSON
- * 
-app.get('/api/get/clients/:clientid/:linkid', function (req, res) {
-    console.log("[200] " + req.method + " to " + req.url);
-    auth.authorize(req.headers.authorization, 1, sql, function(neterr, match){
-        if (neterr || !match) res.sendStatus(neterr);
-        else {
-            sql.query(
-                
-            ,function(ret){
-                res.json(ret);
-            });
-        }
-    });
-});*/
-
-/** 
  * GET request to /api/get/links
  * returns links as JSON
  * */
 app.get('/api/get/links', function (req, res) {
     console.log("[200] " + req.method + " to " + req.url);
-    auth.authorize(req.headers.authorization, 1, sql, function(neterr, match){
-        if (neterr || !match) res.sendStatus(neterr);
-        else {
-            sql.query(
-                
-            ,function(ret){
-                res.json(ret);
-            });
-        }
+    sql.query(
+        'CALL `get_links`("'
+        +req.query.ref
+        +'");'
+    ,function(ret){
+        res.json(ret);
     });
 });
 
