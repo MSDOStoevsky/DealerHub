@@ -1,0 +1,522 @@
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8"></meta>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <meta name="description" content=""></meta>
+        <meta name="keywords" content=""></meta>
+        <meta name="author" content="Dylan Lettinga"></meta>
+
+        <!-- CSS Reset -->
+        <link rel="stylesheet" href="../assets/css/vendor/normalize.css"></link>
+
+        <!-- Milligram CSS minified -->
+        <link rel="stylesheet" href="../assets/css/vendor/milligram.min.css"></link>
+
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="../assets/css/index.css"></link>
+    
+        <script src="../assets/js/vendor/jquery-3.2.1.min.js"></script>
+        <script src="../assets/js/dashboard.js"></script>
+    </head>
+    <body>
+        <main class="wrapper">
+            <nav class="nav">
+                <section class="container">
+                    <div class="nav-title">DH </div>
+                    <ul class="nav-list float-right">
+                        <li class="nav-item"><a id="logout">Logout</a></li>
+                    </ul>
+                </section>
+            </nav>
+            <!-- Business Card-->
+            <header class="container">
+                <h1>Your Dashboard</h1>
+                <div class="thumb">
+                    <img class="image" src="{{d_photo}}" width="140" height="140" title="click to change"></img>
+                    <input id="image-upload" class="hidden" type="file" />
+                </div>
+                <div class="info">
+                    <h3>{{d_name}}</h3>
+                    <p>{{d_email}}</p>
+                </div>
+            </header>
+            <section class="tabs-container">
+                <div class="container">
+                    <div class="row">
+                        <div class="column tab" data-sec="clients">
+                            <h3>Clients</h3>
+                        </div>
+                        <div class="column tab" data-sec="clicks">
+                            <h3>Clicks</h3>
+                        </div>
+                        <div class="column tab" data-sec="links">
+                            <h3>Links</h3>
+                        </div>
+                        <div class="column tab" data-sec="settings">
+                            <h3>Settings</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MAIN CONTAINER -->
+            <section class="container" id="main">
+
+                <!-- clients section -->
+                <div class="" id="clients">
+                    <div class="option"><input id ="add-client" type="button" value="Add Client"/></div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone Number</th>
+                                <th>Last Click</th>
+                                <th>Total Clicks</th>
+                                <th>Referral Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#clients}}
+                            <tr id="{{id}}">
+                                <td>{{name}}</td>
+                                <td><a href="mailto:{{email}}">{{email}}</a></td>
+                                <td><input class="phone-in" type="tel" value="{{phone}}" /></td>
+                                <td><a href="{{last_click}}/">{{last_click}}</a></td>
+                                <td>{{total_clicks}}</td>
+                                <td><input class="ref-btn button-clear" type="button" value="{{referral}}" title="Click to generate a new code!" data-id="{{id}}"  /></td>
+                                <td><input class="update-btn" type="button" value="update" disabled /></td>
+                                <td><input class="delete-btn" type="button" value="×"/></td>
+                            </tr>
+                            {{/clients}}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- clicks section -->
+                <div class="hidden" id="clicks">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Link Name</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#clicks}}
+                            <tr id="{{id}}">
+                                <td><a href="{{id}}">{{name}}</a></td>
+                                <td><a href="mailto:{{email}}">{{email}}</a></td>
+                                <td><a href="{{link_name}}">{{link_name}}</a></td>
+                                <td>{{click_date}}</td>
+                            </tr>
+                            {{/clicks}}
+                        </tbody>
+                    </table>
+                </div>
+            
+                <!-- links section -->
+                <div class="hidden" id="links">
+                    <div class="option"><input id ="add-link" type="button" value="Add Link"/></div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>URL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {{#links}}
+                        <tr id="{{id}}">
+                            <td><input id="" class="nme-in" type="text" value="{{name}}"/></td>
+                            <td><input id="" class="url-in" type="text" value="{{URL}}"/></td>
+                            <td><input class="update-btn" type="button" value="update"/></td>
+                            <td><input class="delete-btn" type="button" value="×"/></td>
+                        </tr>
+                        {{/links}}
+                        </tbody>
+                    </table>
+                </div>
+        
+                <!-- settings template -->
+                <div class="hidden" id="settings">
+                    <h3>Account</h3>
+                    <div class="row">
+                        <div class="column"><p><a id="change-pw-btn">Change Account Password</a></p></div>
+                    </div>
+                    <h3>Customization</h3>
+                    <div class="row">
+                        <div class="column"><p>Enable dark theme</p></div>
+                        <div class="column">
+                            <input id="drkthm" type="checkbox" name="" value="yes"/>
+                            <label class="label-inline" for="drkthm">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+        <!-- The Ref Modal -->
+        <div id="ref-modal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2 class="header-title"></h2>
+                </div>
+                <div class="modal-body">
+                    <h3 class="body-text"><br /></h3>
+                </div>
+                <div class="modal-footer">
+                    <input id="id-hid" type="hidden" value="" />
+                    <input id="gen-btn" type="button" class="button-inverse" value="Generate" />
+                    <input id="cncl-btn" type="button" class="button-inverse float-right" value="Ok" />
+                </div>
+            </div>
+        </div>
+
+        <!-- The Add Modal -->
+        <div id="modal-frame" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2 class="header-title"></h2>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <input id="id-hid" type="hidden" value="" />
+                    <input id="lbtn" type="submit" class="button-inverse" value="" />
+                    <input id="rbtn" type="button" class="button-inverse float-right" value="" />
+                </div>
+            </div>
+        </div>
+
+        <!-- The Confirm Modal -->
+        <div id="conf-modal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2 class="header-title"></h2>
+                </div>
+                <div class="modal-body">
+                    <h3 class="body-text"><br /></h3>
+                </div>
+                <div class="modal-footer">
+                    <input id="yes-btn" type="button" class="button-inverse" value="yes" />
+                    <input id="no-btn" type="button" class="button-inverse float-right" value="no" />
+                </div>
+            </div>
+        </div>
+        <script>
+
+            /** MODAL EM */
+            var refmodal = $('#ref-modal');
+            var refmodaltitl = refmodal.find(".header-title");
+            var refmodaltxt = refmodal.find(".body-text");
+
+            var confmodal = $('#conf-modal');
+            var confmodaltitl = confmodal.find(".header-title");
+            var confmodaltxt = confmodal.find(".body-text");
+
+            var addmodal = $('#add-modal');
+
+            var span = $(".close");
+
+            var addmodalbody =
+                $('<label for="modal-field-nme">Name</label>'
+                +'<input id="modal-field-nme" name="" type="text" class="" value="" placeholder="Evan Williams" />'
+                +'<label for="modal-field-em">Email</label>'
+                +'<input id="modal-field-em" name="" type="text" class="" value="" placeholder="ewilliams@example.com" />'
+                +'<label for="modal-field-pn">Phone Number</label>'
+                +'<input id="modal-field-pn" name="" type="text" class="" value="" placeholder="1234567890" />');
+
+            var addlinkbody =
+                $('<label for="modal-field-nme">Name</label>'
+                +'<input id="modal-field-nme" name="" type="text" class="" value="" placeholder="Home, Inventory, etc." />'
+                +'<label for="modal-field-url">URL</label>'
+                +'<input id="modal-field-url" name="" type="text" class="" value="" placeholder="http://ww.example.com/" />');
+
+            var changepwbody =
+                $('<label for="modal-field-em">Email</label>'
+                +'<input id="modal-field-em" name="" type="text" class="" value="" placeholder="ewilliams@example.com" />'
+                +'<label for="modal-field-pw">Current Password</label>'
+                +'<input id="modal-field-pw" name="" type="password" class="" value="" />'
+                +'<label for="modal-field-npw">New Password</label>'
+                +'<input id="modal-field-npw" name="" type="password" placeholder="Minimum of 6 characters" value="" />');
+
+            $(document).ready(function(){
+                if(!location.hash) location.hash = "clients";
+                ldfrom(location.hash);
+                $('.tabs-container .tab[data-sec="'+window.location.hash.substring(1)+'"]').addClass("open");
+                if ( $("#drkthm").is(":checked") ) drkthm();
+            });
+
+            function closemod(){
+                refmodal.css("display","none");
+                confmodal.css("display","none");
+                addmodal.css("display","none");
+            }
+
+            $("#add-client").on("click", function(){
+                modal("Add New Client", addmodalbody, "Add", "Cancel",
+                function(){
+                    alert("oops");
+                }
+                ,function(){
+                    $("#modal-frame").css("display","none");
+                });
+            });
+
+            $("#add-link").on("click", function(){
+                modal("Add New Link", addlinkbody, "Add", "Cancel",
+                function(){
+                    $(this).css("display", "none");
+                }
+                ,function(){
+                    $("#modal-frame").css("display","none");
+                });
+            });
+
+            $("#change-pw-btn").on("click", function(){
+                modal("Change Account Password", changepwbody, "Submit", "Cancel"
+                ,function(){
+                    $(this).css("display", "none");
+                }
+                ,function(){
+                    $(this).css("display", "none");
+                });
+            });
+
+            $("#logout").on("click", function(){
+                delCookie("SESSION");
+                window.location.reload();
+            });
+
+            $(".thumb img").on("click", function(){
+                $("#image-upload").click();
+            });
+
+            $("#clients tr").each(function()
+            {
+                var id = $(this).attr('id');
+                var inputs = $(this).find(".phone-in");
+                var updt = $(this).find(".update-btn");
+                var del = $(this).find(".delete-btn");
+                var init = "";
+                inputs.on("click", function()
+                {
+                    init = $(this).val();
+                });
+                inputs.on("input", function()
+                {
+                    if($(this).val() === init)
+                        updt.prop('disabled', true);
+                    else
+                        updt.prop('disabled', false);
+                });
+
+                del.on("click", function(){
+                    confirm_mod("Confirm Delete", "Are you sure you want to delete this client?", function(res){
+                        if(res){
+                            var arr = { cid: id,  aid: "1" };
+                            console.log(JSON.stringify(arr));
+                            $.ajax({
+                                url: ("/api/rmv/client/")
+                                ,type: "POST"
+                                ,headers: {
+                                    "Authorization" : ("Bearer " + getCookie("SESSION")),
+                                    "Accept" : "application/json; charset=utf-8",
+                                    "Content-Type": "application/json; charset=utf-8",
+                                }
+                                ,data: JSON.stringify(arr)
+                                ,success: function(data)
+                                {
+                                    window.location.reload();
+                                }
+                                ,error: function (jqXHR, exception) {
+                                    ajax_err(jqXHR, exception);
+                                }
+                            });
+                        }
+                        else return;
+                    });
+                });
+
+                updt.on("click", function(){
+                    confirm_mod("Confirm Update", "Are you sure you want to update this client?", function(res){
+                        if(res){
+                            var arr = { cid: id, aid: "1", pn: inputs.val() };
+                            console.log(JSON.stringify(arr));
+                            $.ajax({
+                                url: ("/api/upd/client/")
+                                ,type: "POST"
+                                ,headers: {
+                                    "Authorization" : ("Bearer " + getCookie("SESSION")),
+                                    "Accept" : "application/json; charset=utf-8",
+                                    "Content-Type": "application/json; charset=utf-8",
+                                }
+                                ,data: JSON.stringify(arr)
+                                ,success: function(data)
+                                {
+                                    window.location.reload();
+                                }
+                                ,error: function (jqXHR, exception) {
+                                    ajax_err(jqXHR, exception);
+                                }
+                            });
+                        }
+                        else return;
+                    });
+                });
+            });
+
+            $("#links tr").each(function()
+            {
+                var id = $(this).attr('id');
+                var del = $(this).find(".delete-btn");
+                var updt = $(this).find(".update-btn");
+                var namein = $(this).find(".nme-in");
+                var urlin = $(this).find(".url-in");
+
+                del.on("click", function(){
+                    confirm_mod("Confirm Delete", "Are you sure you want to delete this link?", function(res){
+                        if(res){
+                            var arr = { lid: id,  aid: "1" };
+                            console.log(JSON.stringify(arr));
+                            $.ajax({
+                                url: ("/api/rmv/link/")
+                                ,type: "POST"
+                                ,headers: {
+                                    "Authorization" : ("Bearer " + getCookie("SESSION")),
+                                    "Accept" : "application/json; charset=utf-8",
+                                    "Content-Type": "application/json; charset=utf-8",
+                                }
+                                ,data: JSON.stringify(arr)
+                                ,success: function(data)
+                                {
+                                    window.location.reload();
+                                }
+                                ,error: function (jqXHR, exception) {
+                                    ajax_err(jqXHR, exception);
+                                }
+                            });
+                        }
+                        else return;
+                    });
+                });
+
+                updt.on("click", function(){
+                    confirm_mod("Confirm Update", "Are you sure you want to update this link?", function(res){
+                        if(res){
+                            var arr = { lid: id, aid: "1", nme: namein.val(), url: urlin.val() };
+                            console.log(JSON.stringify(arr));
+                            $.ajax({
+                                url: ("/api/upd/link/")
+                                ,type: "POST"
+                                ,headers: {
+                                    "Authorization" : ("Bearer " + getCookie("SESSION")),
+                                    "Accept" : "application/json; charset=utf-8",
+                                    "Content-Type": "application/json; charset=utf-8",
+                                }
+                                ,data: JSON.stringify(arr)
+                                ,success: function(data)
+                                {
+                                    window.location.reload();
+                                }
+                                ,error: function (jqXHR, exception) {
+                                    ajax_err(jqXHR, exception);
+                                }
+                            });
+                        }
+                        else return;
+                    });
+                });
+            });
+
+            /** REF MODAL */
+            $(".ref-btn").on("click", function(){
+                $("#id-hid").val($(this).data('id'));
+                refmodaltitl.text("Generate a New Referral");
+                refmodal.css("display","block");
+            });
+            
+            span.on("click", function() {
+                refmodal.css("display","none");
+                confmodal.css("display","none");
+            });
+
+            $("#cncl-btn").on("click", function() {
+                refmodal.css("display","none");
+                confmodal.css("display","none");
+                addmodal.css("display","none");
+            });
+
+            $("window").on("click", function(event) {
+                if (event.target == refmodal) refmodal.css("display","none");
+            });
+
+            $("#gen-btn").on("click", function() {
+                $.ajax({
+                    url: ("/api/add/referral/"+$("#id-hid").val())
+                    ,type: "POST"
+                    ,headers: {
+                        "Authorization" : ("Bearer " + getCookie("SESSION")),
+                        "Accept" : "application/json; charset=utf-8",
+                        "Content-Type": "application/json; charset=utf-8",
+                    }
+                    ,success: function(data)
+                    {
+                        console.log(data);
+                        refmodaltxt.text( ("www.workingname.com/page/?ref="+data["REFERRAL"]) );
+                        //window.location.reload();
+                    }
+                    ,error: function (jqXHR, exception) {
+                        ajax_err(jqXHR, exception);
+                    }
+                });
+            });
+            /** END REF MODAL */
+
+            $("tr > td > input[type='button']").on("click", function(){
+                $(this).parents("tr").children("td").find("input[type='text'], input[type='tel']").each(function(){
+                    console.log($(this));
+                    $.ajax({
+                        
+                    });
+                });
+            });
+
+            $(".tabs-container .tab").on("click", function(){
+                var sec = "#"+$(this).attr("data-sec");
+                $(".tabs-container .tab").removeClass("open");
+                $(this).addClass("open");
+                location.hash = sec;
+                ldfrom(sec);
+            });
+
+            $("#drkthm").on("click", function(){
+                if ( $(this).is(":checked") ) {
+                    drkthm();
+                } else {
+                    $("body").css("background-color", "initial");
+                    $("body").css("color", "#606c76");
+                }
+            });
+
+            function confirm_mod(head, body, ret) {
+                if(head) confmodaltitl.text(head);
+                if(body) confmodaltxt.text(body);
+                confmodal.css("display","block");
+
+                $("#yes-btn").on("click", function(){ret(true);});
+                $("#no-btn").on("click", function(){confmodal.css("display","none");});
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,132 @@
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8"></meta>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <meta name="description" content=""></meta>
+        <meta name="keywords" content=""></meta>
+        <meta name="author" content="Dylan Lettinga"></meta>
+
+        <!-- CSS Reset -->
+        <link rel="stylesheet" href="../assets/css/vendor/normalize.css">
+
+        <!-- Milligram CSS minified -->
+        <link rel="stylesheet" href="../assets/css/vendor/milligram.min.css">
+
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="../assets/css/index.css">
+    
+        <script src="../assets/js/vendor/jquery-3.2.1.min.js"></script>
+        <script src="../assets/js/dashboard.js"></script>
+    </head>
+    <body>
+        <main class="wrapper">
+            <nav class="nav">
+                <section class="container">
+                    <div class="nav-title">DH</div>
+                </section>
+            </nav>
+            <!-- Business Card -->
+            <header class="container">
+                <h1>Your Dealer</h1>
+                <div class="thumb">
+                    <img class="image" src="{{d_photo}}" width="140" height="140" title="click to change"></img>
+                    <input id="image-upload" class="hidden" type="file" />
+                </div>
+                <div class="info">
+                    <h3>{{d_name}}</h3>
+                    <p>{{d_email}}</p>
+                </div>
+            </header>
+            <section class="tabs-container">
+                <div class="container">
+                    <div class="row">
+                        <div class="column tab open" data-sec="links-section">
+                            <h3>Explore Further</h3>
+                        </div>
+                        <div class="column tab" data-sec="contact-section">
+                            <h3>Get in Contact</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="container" id="main">
+                <div class="" id="links-section">
+                    {{#links}}
+                    <div class="row link" id="{{id}}" data-url="{{URL}}">
+                        <div class="column">
+                            <h4><a>{{name}}</a></h4>
+                        </div>
+                    </div>
+                    {{/links}}
+                </div>
+
+                <!-- CONTACT -->
+                <div class="hidden" id="contact-section">
+                    <div class="row" >
+                        <div class="column">
+                            
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- The Confirm Modal
+        <div id="conf-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2 class="header-title">Confirm Action</h2>
+                </div>
+                <div class="modal-body">
+                    <h3 class="body-text">This will take you to an external site. <br />Continue?</h3>
+                </div>
+                <div class="modal-footer">
+                    <input id="yes-btn" type="button" class="button-inverse" value="yes" />
+                    <input id="no-btn" type="button" class="button-inverse float-right" value="no" />
+                </div>
+            </div>
+        </div> -->
+        <script>
+
+            
+
+            $(".link").each(function(){
+                
+                $(this).on("click", function(){
+                    var dat = {lid: $(this).attr("id"), ref: "{{c_ref}}" };
+                    var url = $(this).data("url");
+                    $.ajax({
+                        url: ("/api/add/click/")
+                        ,type: "POST"
+                        ,headers: {
+                            "Accept" : "application/json; charset=utf-8",
+                            "Content-Type": "application/json; charset=utf-8",
+                        }
+                        ,data: JSON.stringify(dat)
+                        ,success: function(data)
+                        {
+                            window.open(url, "_top");
+                        }
+                        ,error: function (jqXHR, exception) {
+                            alert(exception);
+                            window.open(url, "_top");
+                        }
+                    });
+                });
+            });
+
+            
+            
+            $(".tabs-container .tab").on("click", function(){
+                var sec = "#"+$(this).attr("data-sec");
+                $(".tabs-container .tab").removeClass("open");
+                $(this).addClass("open");
+                $("#main > div").addClass("hidden");
+                $(sec).removeClass("hidden");
+            });
+            
+        </script>
+    </body>
+</html>

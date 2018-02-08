@@ -1,7 +1,13 @@
 var bcrypt = require('bcrypt-nodejs');
 
-function S4(){
+function S4()
+{
     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+}
+
+function token_gen() 
+{
+    return (S4()+S4()+S4()+S4()+S4()+S4());
 }
 
 module.exports = {
@@ -11,7 +17,7 @@ module.exports = {
     },
 
     referral_gen : () => {
-        return (S4()+S4());
+        return (S4());
     },
 
     login: (basic, db, res) => {
@@ -30,7 +36,7 @@ module.exports = {
         if(auth_arr[0] === "Basic")
         {
             un_pw = Buffer.from(auth_arr[1], 'base64').toString('ascii').split(":");
-            db.query('SELECT * FROM `Admins` WHERE `email` = "'+un_pw[0]+'"', function(ret){
+            db.query('SELECT `id`, `pw` FROM `Admins` WHERE `email` = ?', [un_pw[0]], function(ret){
                 /* no user with that un */
                 if(ret.length === 0)
                     res(400, null);
@@ -38,7 +44,6 @@ module.exports = {
                 /* correct match on un */
                 else
                 {
-                    console.log(ret);
                     bcrypt.compare(un_pw[1], ret[0].pw, function(bcrypt_err, issame){
                         if (bcrypt_err) throw bcrypt_err;
                         /* password matches */
@@ -46,11 +51,9 @@ module.exports = {
                         { 
                             /* store generated access token in db and send to client */
                             var access_token = token_gen();
-                            db.query("UPDATE `Admins` SET `token` = '"
-                            + access_token
-                            + "', `last_login` = NOW()"
-                            + " WHERE `id` = "
-                            +ret[0].id
+                            db.query(
+                                "UPDATE `Admins` SET `token` = ?, `last_login` = NOW() WHERE `id` = ?"
+                            ,[access_token, ret[0].id]
                             ,function(ret){
                                 if(ret !== null)
                                     res (null, access_token);
@@ -85,7 +88,7 @@ module.exports = {
         if(bearer_arr[0] === "Bearer")
         {
             btoken = bearer_arr[1];
-            db.query('SELECT * FROM `Admins` WHERE `id` = "'+user+'"', function(ret){
+            db.query('SELECT `token` FROM `Admins` WHERE `id` = ?', [user], function(ret){
 
                 /* no user with that user_id */
                 if(ret.length === 0)

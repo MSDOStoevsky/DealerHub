@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8"></meta>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <meta name="description" content=""></meta>
+        <meta name="keywords" content="dealer, automobile, vehicle"></meta>
+        <meta name="author" content="Dylan Lettinga"></meta>
+
+        <!-- CSS Reset -->
+        <link rel="stylesheet" href="assets/css/vendor/normalize.css">
+
+        <!-- Milligram CSS minified -->
+        <link rel="stylesheet" href="assets/css/vendor/milligram.min.css">
+
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="assets/css/index.css">
+    
+        <script src="assets/js/vendor/jquery-3.2.1.min.js"></script>
+    </head>
+    <body>
+        <main class="wrapper">
+            <nav class="nav">
+                <section class="container">
+                    <div class="nav-title">DH</div>
+                    <ul class="nav-list float-right">
+                        <li class="nav-item"><a href="/admin">Admin</a></li>
+                    </ul>
+                </section>
+            </nav>
+            <header class="container">
+                <h1>Your Dashboard</h1>
+                <section class="container">
+                </section>
+            </header>
+            <section class="container">
+                <form id="ref_form">
+                    <fieldset>
+                        <label for="ref_field">Enter Your Referral Code</label>
+                        <input placeholder="e.g., CJY618" id="ref_field" type="text" required>
+                        <div class="float-right">
+                            <input id="remember" type="checkbox">
+                            <label class="label-inline" for="remember">Remember Me</label>
+                        </div>
+                        <input class="button-primary" value="Send" type="submit">
+                    </fieldset>
+                </form>
+            </section>
+        </main>
+        <script>
+            //TODO on load check if existing referral on file
+            $("#ref_form").on("submit", function(e){
+                e.preventDefault();
+                var r = $('#ref_field').val();
+                window.location.href="page/?ref="+r;
+            });
+        </script>
+    </body>
+</html>

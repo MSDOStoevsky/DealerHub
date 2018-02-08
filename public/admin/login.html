@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8"></meta>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+        <meta name="description" content=""></meta>
+        <meta name="keywords" content="Login to your dashboard"></meta>
+        <meta name="author" content="Dylan Lettinga"></meta>
+
+        <!-- CSS Reset -->
+        <link rel="stylesheet" href="../assets/css/vendor/normalize.css">
+
+        <!-- Milligram CSS minified -->
+        <link rel="stylesheet" href="../assets/css/vendor/milligram.min.css">
+
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="../assets/css/index.css">
+    
+        <script src="../assets/js/vendor/jquery-3.2.1.min.js"></script>
+        <script src="../assets/js/dashboard.js"></script>
+    </head>
+    <body>
+        <main class="wrapper">
+            <nav class="nav">
+                <section class="container">
+                    <div class="nav-title">DH</div>
+                </section>
+            </nav>
+            <header class="container">
+                <h1>View Your Dashboard</h1>
+            </header>
+            <div class="container">
+                <div class="">
+                    <form id="login_form">
+                        <fieldset>
+                            <label for="login_field">Login</label>
+                            <input placeholder="e.g., address@example.com" id="login_field" type="email" required>
+                            <label for="pass_field">Password</label>
+                            <input placeholder="" id="pass_field" type="password" required>
+                            <div class="float-right">
+                                <input id="remember" type="checkbox">
+                                <label class="label-inline" for="remember">Remember Me</label>
+                            </div>
+                            <input class="button-primary" value="Login" type="submit">
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <script>
+
+            function submission_failure()
+            {
+                alert("Your username or password was incorrect.\nPlease try again.");
+            }
+
+            $("#login_form").on("submit", function(e){
+                e.preventDefault();
+                var l = $('#login_field').val();
+                var p = $('#pass_field').val();
+                $.ajax({
+                    url: "/auth/login"
+                    ,type: "POST"
+                    ,headers: { 
+                        "Authorization" : ("Basic " + btoa(l + ":" + p)),
+                        "Accept" : "application/json; charset=utf-8",
+                        "Content-Type": "application/json; charset=utf-8",
+                    }
+                    ,dataType:"json"
+                    ,success: function()
+                    {
+                        window.location.href="";
+                    }
+                    ,error: function (jqXHR, exception) {
+                        ajax_err(jqXHR, exception);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

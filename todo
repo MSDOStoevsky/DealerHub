@@ -1,0 +1,4 @@
+set session expiration
+flesh out referral code process
+optimize queries
+serve dynamic pages with handlebars
